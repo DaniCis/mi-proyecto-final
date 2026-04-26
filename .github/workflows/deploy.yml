@@ -3,6 +3,12 @@ name: Deploy a GitHub Pages
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+    
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
@@ -13,8 +19,13 @@ jobs:
     - name: Preparar archivos
       run: mkdir -p build && cp -r src/* build/
     
-    - name: Deploy a GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Subir artefacto
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build
+        path: ./build
+
+    - name: Deploy
+      uses: actions/deploy-pages@v4 
